@@ -1,8 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
-  height: 10,
-  width: 10,
+  height: 20,
+  width: 20,
   divCoordinates: [],
   headCoords: [1, 1],
   direction: 'ArrowUp',
@@ -10,6 +10,11 @@ const initialState = {
   snakeBody: [],
   prevPieceCoords: [null, null],
   isGameOver: false,
+  score: 0,
+  showStartForm: true,
+  snakeSpeed: null,
+  maxSnakeSpeed: 30,
+  pause: false,
 };
 
 export const snakeSlice = createSlice({
@@ -17,7 +22,13 @@ export const snakeSlice = createSlice({
   initialState,
   reducers: {
     reset(state) {
-      state.divCoordinates.length = 0;
+      state.headCoords = [1, 1];
+      state.newPieceCoords = [5, 5];
+      state.snakeBody = [];
+      state.divCoordinates = [];
+      state.prevPieceCoords = [null, null];
+      state.score = 0;
+      state.isGameOver = false;
     },
     setDivCoordinates(state) {
       for (let i = 1; i <= state.height; i++) {
@@ -75,7 +86,7 @@ export const snakeSlice = createSlice({
       }
       state.snakeBody.push(state.headCoords);
     },
-    setDirection(state, action) {
+    keyAction(state, action) {
       switch (action.payload) {
         default:
           return state;
@@ -95,6 +106,10 @@ export const snakeSlice = createSlice({
           if (state.direction === 'ArrowLeft') return state;
           break;
         }
+        case ' ': {
+          state.pause = !state.pause;
+          return state;
+        }
       }
       state.direction = action.payload;
     },
@@ -108,7 +123,6 @@ export const snakeSlice = createSlice({
         const body = (x, y) => {
           for (let i = 0; i < state.snakeBody.length - 1; i++) {
             if (state.snakeBody[i][0] === x && state.snakeBody[i][1] === y) {
-              debugger;
               getCoords();
             }
           }
@@ -118,10 +132,30 @@ export const snakeSlice = createSlice({
       getCoords();
       state.newPieceCoords = [xCoord, yCoord];
     },
+    increaseScore(state) {
+      state.score += 1;
+    },
+    setFormData(state, action) {
+      const { height, width, snakeSpeed } = action.payload;
+      state.height = +height;
+      state.width = +width;
+      let snakeSpeedNum = +snakeSpeed;
+      if (snakeSpeedNum < 20) snakeSpeedNum = 20;
+      state.snakeSpeed = state.maxSnakeSpeed / (snakeSpeedNum / 100);
+      state.showStartForm = false;
+    },
   },
 });
 
-export const { setDivCoordinates, setHeadCoords, setDirection, setPieceCoords, changeSnakeLength } =
-  snakeSlice.actions;
+export const {
+  setDivCoordinates,
+  setHeadCoords,
+  keyAction,
+  setPieceCoords,
+  changeSnakeLength,
+  increaseScore,
+  reset,
+  setFormData,
+} = snakeSlice.actions;
 
 export default snakeSlice.reducer;
