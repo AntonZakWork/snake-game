@@ -1,4 +1,6 @@
+
 .App {
+    position:relative;
     background: #60DD3A;
 background: -webkit-linear-gradient(top left, #60DD3A, #3672A9);
 background: -moz-linear-gradient(top left, #60DD3A, #3672A9);
@@ -10,6 +12,39 @@ background: linear-gradient(to bottom right, #60DD3A, #3672A9);
     height: fit-content;
     padding: 15px;
     box-shadow: 4.0px 8.0px 8.0px hsl(0deg 0% 0% / 0.38);
+    animation: appear 0.35s ;
+    @keyframes appear {
+        0%{
+            opacity: 0;
+            transform: scale(2)
+        }
+        100% {
+            opacity: 1;
+            transform: scale(1)
+        }
+    }
+    &.remove{
+        position: relative;
+        animation: jump 0.35s linear;
+        @keyframes jump {
+            25% {
+                top: -100px;
+                transform: rotate(15deg);
+            }
+            50%{
+                top: -200px;
+                transform: rotate(-15deg);
+            }
+            75%{
+                top: -100px;
+                transform: rotate(-15deg);
+            }
+            100% {
+                top: 0;
+                transform: rotate(0deg);
+            }
+        }
+    }
     &:focus{
         outline:none;
     }
@@ -30,6 +65,24 @@ background: linear-gradient(to bottom right, #60DD3A, #3672A9);
     }
     .newPiece{
         background-image: url("data:image/svg+xml,%3C%3Fxml%20version%3D%221.0%22%20%3F%3E%3Csvg%20data-name%3D%22Layer%202%22%20id%3D%22Layer_2%22%20viewBox%3D%220%200%2064%2064%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cdefs%3E%3Cstyle%3E.cls-1%7Bfill%3A%23ffe94f%3B%7D.cls-2%7Bfill%3A%235c3b51%3B%7D.cls-3%7Bfill%3A%234a2e42%3B%7D.cls-4%7Bfill%3A%238bd94f%3B%7D.cls-5%7Bfill%3A%235fbf39%3B%7D.cls-6%7Bfill%3A%232c2a3d%3B%7D%3C%2Fstyle%3E%3C%2Fdefs%3E%3Ctitle%2F%3E%3Cpath%20class%3D%22cls-1%22%20d%3D%22M30.88%2C10.29c-.62-2-2.68-6.18-9.1-6.79a.85.85%2C0%2C0%2C0-.86%2C1c.21%2C2.27%2C1.53%2C7.44%2C9.24%2C7A.9.9%2C0%2C0%2C0%2C30.88%2C10.29Z%22%2F%3E%3Cpath%20class%3D%22cls-2%22%20d%3D%22M29.55%2C13a13.19%2C13.19%2C0%2C0%2C0%2C0-8.66A1%2C1%2C0%2C0%2C1%2C30.47%2C3h3.09a1%2C1%2C0%2C0%2C1%2C1%2C.69A14.89%2C14.89%2C0%2C0%2C1%2C33.85%2C13Z%22%2F%3E%3Cpath%20class%3D%22cls-3%22%20d%3D%22M30%2C6.19A38.68%2C38.68%2C0%2C0%2C1%2C34.94%2C6a12.43%2C12.43%2C0%2C0%2C0-.42-2.26%2C1%2C1%2C0%2C0%2C0-1-.69H30.47a1%2C1%2C0%2C0%2C0-.93%2C1.34A13.65%2C13.65%2C0%2C0%2C1%2C30%2C6.19Z%22%2F%3E%3Cpath%20class%3D%22cls-4%22%20d%3D%22M58%2C34.41C58%2C48.62%2C47.45%2C63%2C32%2C60.77%2C17.3%2C63%2C6%2C48.62%2C6%2C34.41S8.26%2C8%2C32%2C11.68C54.23%2C8%2C58%2C20.21%2C58%2C34.41Z%22%2F%3E%3Cpath%20class%3D%22cls-5%22%20d%3D%22M32%2C14.74c21.24-3.56%2C25.62%2C7.47%2C26%2C20.85%2C0-.39%2C0-.79%2C0-1.18C58%2C20.21%2C54.23%2C8%2C32%2C11.68%2C8.26%2C8%2C6%2C20.21%2C6%2C34.41c0%2C.31%2C0%2C.61%2C0%2C.91C6.29%2C22.06%2C9.47%2C11.2%2C32%2C14.74Z%22%2F%3E%3Ccircle%20class%3D%22cls-5%22%20cx%3D%2246.83%22%20cy%3D%2217.69%22%20r%3D%223.03%22%2F%3E%3Cpath%20class%3D%22cls-6%22%20d%3D%22M52.42%2C14c-3.84-3.25-9.33-4.51-16.71-3.82a14.44%2C14.44%2C0%2C0%2C0-.23-6.77A2%2C2%2C0%2C0%2C0%2C33.56%2C2H30.47a2%2C2%2C0%2C0%2C0-1.62.83%2C2.05%2C2.05%2C0%2C0%2C0-.26%2C1.83c.07.2.13.41.18.61a11.84%2C11.84%2C0%2C0%2C0-6.89-2.76%2C1.69%2C1.69%2C0%2C0%2C0-1.39.5%2C1.94%2C1.94%2C0%2C0%2C0-.57%2C1.56%2C9%2C9%2C0%2C0%2C0%2C2.43%2C5.48c-4.84.25-8.58%2C1.54-11.31%2C3.87C6%2C18.21%2C5%2C25.21%2C5%2C34.41A29.92%2C29.92%2C0%2C0%2C0%2C15%2C56.6a21.18%2C21.18%2C0%2C0%2C0%2C17%2C5.18%2C22.87%2C22.87%2C0%2C0%2C0%2C3.18.22%2C21.22%2C21.22%2C0%2C0%2C0%2C14.11-5.36c6-5.19%2C9.71-13.7%2C9.71-22.23C59%2C27.5%2C58.25%2C18.93%2C52.42%2C14ZM33.56%2C4a13.11%2C13.11%2C0%2C0%2C1%2C.06%2C6.45L32%2C10.66l-.85-.12a16.55%2C16.55%2C0%2C0%2C0%2C.13-1.75A14.33%2C14.33%2C0%2C0%2C0%2C30.47%2C4Zm-11.67.55C26.19%2C5%2C28.26%2C7.17%2C29.26%2C9c0%2C.43-.05.85-.1%2C1.26-1-.11-2.05-.19-3-.23A6.28%2C6.28%2C0%2C0%2C1%2C21.89%2C4.52ZM48%2C55.12a19.31%2C19.31%2C0%2C0%2C1-15.84%2C4.66h-.29a19.09%2C19.09%2C0%2C0%2C1-15.56-4.69A27.91%2C27.91%2C0%2C0%2C1%2C7%2C34.41c0-8.64.91-15.18%2C5.34-19C15%2C13.14%2C18.93%2C12%2C24.14%2C12c.59%2C0%2C1.19%2C0%2C1.8%2C0h0q1.82.09%2C3.84.33h.11l1.94.27a.91.91%2C0%2C0%2C0%2C.33%2C0c.81-.13%2C1.59-.24%2C2.36-.34h0c7.5-.92%2C13%2C.13%2C16.58%2C3.2C55.19%2C19%2C57%2C24.79%2C57%2C34.41%2C57%2C42.37%2C53.54%2C50.31%2C48%2C55.12Z%22%2F%3E%3Cpath%20class%3D%22cls-6%22%20d%3D%22M13.58%2C19.57C12%2C21%2C10.79%2C24.44%2C11%2C26.89a1%2C1%2C0%2C0%2C0%2C1%2C.91h.09A1%2C1%2C0%2C0%2C0%2C13%2C26.71c-.16-1.78.82-4.68%2C1.91-5.64a1%2C1%2C0%2C0%2C0-1.33-1.5Z%22%2F%3E%3Ccircle%20class%3D%22cls-6%22%20cx%3D%2217%22%20cy%3D%2218%22%20r%3D%221%22%2F%3E%3C%2Fsvg%3E");
+    }
+    .pauseIcon{
+        width:100%;
+        height:100%;
+        position:absolute;
+        left: 4%;
+        top: 3%;
+        background: transparent;
+        display:flex;
+            justify-content: center;
+            align-items: center;
+        svg{
+            
+            width:70%;
+            height:70%;
+            opacity: 0.2
+        }
+
     }
     
 }
