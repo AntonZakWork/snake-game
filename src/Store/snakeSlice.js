@@ -15,6 +15,8 @@ const initialState = {
   snakeSpeed: null,
   maxSnakeSpeed: 30,
   pause: false,
+  showRestart: false,
+  showSettings: false,
 };
 
 export const snakeSlice = createSlice({
@@ -25,7 +27,7 @@ export const snakeSlice = createSlice({
       state.headCoords = [1, 1];
       state.newPieceCoords = [5, 5];
       state.snakeBody = [];
-      state.divCoordinates = [];
+      //   state.divCoordinates = [];
       state.prevPieceCoords = [null, null];
       state.score = 0;
       state.isGameOver = false;
@@ -107,7 +109,9 @@ export const snakeSlice = createSlice({
           break;
         }
         case ' ': {
-          state.pause = !state.pause;
+          if (!state.isGameOver) {
+            state.pause = !state.pause;
+          }
           return state;
         }
       }
@@ -142,7 +146,14 @@ export const snakeSlice = createSlice({
       let snakeSpeedNum = +snakeSpeed;
       if (snakeSpeedNum < 20) snakeSpeedNum = 20;
       state.snakeSpeed = state.maxSnakeSpeed / (snakeSpeedNum / 100);
+      //   state.showStartForm = false;
+    },
+    toggleStartForm(state) {
       state.showStartForm = false;
+    },
+    toggleSettings(state) {
+      state.pause = !state.pause;
+      state.showSettings = !state.showSettings;
     },
   },
 });
@@ -156,6 +167,9 @@ export const {
   increaseScore,
   reset,
   setFormData,
+  toggleStartForm,
+  setShowRestart,
+  toggleSettings,
 } = snakeSlice.actions;
 
 export default snakeSlice.reducer;
