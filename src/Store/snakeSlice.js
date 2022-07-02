@@ -1,8 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
-  height: 20,
-  width: 20,
+  height: null,
+  width: null,
   divCoordinates: [],
   headCoords: [1, 1],
   direction: 'ArrowUp',
@@ -24,15 +24,22 @@ export const snakeSlice = createSlice({
   initialState,
   reducers: {
     reset(state) {
-      state.headCoords = [1, 1];
+      if (localStorage.getItem('values')) {
+        const { height, width, snakeSpeed } = JSON.parse(localStorage.getItem('values'));
+        state.height = +height;
+        state.width = +width;
+        state.snakeSpeed = +snakeSpeed;
+      }
+      state.headCoords = [Math.floor(state.height / 2), Math.floor(state.width / 2)];
       state.newPieceCoords = [5, 5];
       state.snakeBody = [];
-      //   state.divCoordinates = [];
       state.prevPieceCoords = [null, null];
       state.score = 0;
       state.isGameOver = false;
+      localStorage.clear();
     },
     setDivCoordinates(state) {
+      state.divCoordinates = [];
       for (let i = 1; i <= state.height; i++) {
         for (let j = 1; j <= state.width; j++) {
           state.divCoordinates.push([i, j]);
@@ -140,13 +147,13 @@ export const snakeSlice = createSlice({
       state.score += 1;
     },
     setFormData(state, action) {
+      state.snakeBody = [];
       const { height, width, snakeSpeed } = action.payload;
       state.height = +height;
       state.width = +width;
       let snakeSpeedNum = +snakeSpeed;
       if (snakeSpeedNum < 20) snakeSpeedNum = 20;
       state.snakeSpeed = state.maxSnakeSpeed / (snakeSpeedNum / 100);
-      //   state.showStartForm = false;
     },
     toggleStartForm(state) {
       state.showStartForm = false;

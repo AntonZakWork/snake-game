@@ -1,5 +1,6 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import Form from '../Form/Form';
 import { toggleSettings } from '../Store/snakeSlice';
 import './Settings.scss';
 const Settings = ({ remove, setRemove }) => {
@@ -17,7 +18,7 @@ const Settings = ({ remove, setRemove }) => {
                 }
               : undefined
           }>
-          Settings
+          <Form setRemove={setRemove} />
         </div>
       )}
     </>

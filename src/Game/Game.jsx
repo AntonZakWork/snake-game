@@ -17,7 +17,7 @@ import Settings from '../Settings/Settings';
 const Game = () => {
   const [remove, setRemove] = useState(true);
   const field = useRef();
-  const appCoords = useRef();
+  //   const appCoords = useRef();
   const dispatch = useDispatch();
   const {
     width,
@@ -33,11 +33,12 @@ const Game = () => {
     showSettings,
   } = useSelector((state) => state.snake);
   useEffect(() => {
+    console.log(height, width, snakeSpeed);
     dispatch(setDivCoordinates());
     field.current.focus();
     dispatch(setPieceCoords());
-    appCoords.current = field.current.getBoundingClientRect();
-  }, []);
+    // appCoords.current = field.current.getBoundingClientRect();
+  }, [height, width, snakeSpeed]);
   useEffect(() => {
     field.current.focus();
   }, [isGameOver, showSettings]);
@@ -77,8 +78,8 @@ const Game = () => {
         className="settingsIcon"
         tabIndex={0}
         onClick={() => {
-          remove && dispatch(toggleSettings());
           setRemove((prev) => !prev);
+          remove && dispatch(toggleSettings());
         }}>
         <svg
           enableBackground="new 0 0 32 32"
