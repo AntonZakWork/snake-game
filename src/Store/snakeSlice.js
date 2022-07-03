@@ -4,7 +4,8 @@ const initialState = {
   height: null,
   width: null,
   divCoordinates: [],
-  headCoords: [1, 1],
+  fieldProps: null,
+  headCoords: [null, null],
   direction: 'ArrowUp',
   newPieceCoords: [null, null],
   snakeBody: [],
@@ -30,8 +31,6 @@ export const snakeSlice = createSlice({
         state.width = +width;
         state.snakeSpeed = +snakeSpeed;
       }
-      state.headCoords = [Math.floor(state.height / 2), Math.floor(state.width / 2)];
-      state.newPieceCoords = [5, 5];
       state.snakeBody = [];
       state.prevPieceCoords = [null, null];
       state.score = 0;
@@ -40,12 +39,33 @@ export const snakeSlice = createSlice({
     },
     setDivCoordinates(state) {
       state.divCoordinates = [];
-      for (let i = 1; i <= state.height; i++) {
-        for (let j = 1; j <= state.width; j++) {
-          state.divCoordinates.push([i, j]);
-        }
+      for (let i = 1; i <= state.height * state.width; i++) {
+        state.divCoordinates.push(i);
       }
+      const fieldGenerator = (width, height) => {
+        return {
+          gridTemplateColumns: `repeat(${width}, auto)`,
+          gridTemplateRows: `repeat(${height}, auto)`,
+        };
+      };
+      state.fieldProps = fieldGenerator(state.width, state.height);
+      state.headCoords = [Math.floor(state.height / 2), Math.floor(state.width / 2)];
+
+      const getCoords = () => {
+        let xCoord = Math.ceil(Math.random() * state.height);
+        let yCoord = Math.ceil(Math.random() * state.width);
+        const body = (x, y) => {
+          for (let i = 0; i < state.snakeBody.length - 1; i++) {
+            if (state.snakeBody[i][0] === x && state.snakeBody[i][1] === y) {
+              getCoords();
+            }
+          }
+        };
+        body(xCoord, yCoord);
+      };
+      getCoords();
     },
+
     setHeadCoords(state) {
       if (state.snakeBody.length === 0) state.snakeBody.push(state.headCoords);
       if (

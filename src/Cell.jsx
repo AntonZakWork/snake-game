@@ -1,7 +1,8 @@
 import React from 'react';
 
-const Cell = ({ classProp }) => {
-  return <div className={classProp ? `${classProp}` : ''}></div>;
+const Cell = () => {
+  console.log('bebra');
+  return <div></div>;
 };
 
 export default Cell;
