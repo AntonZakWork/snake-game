@@ -18,6 +18,9 @@ const initialState = {
   pause: false,
   showRestart: false,
   showSettings: false,
+  circlesCoords: [],
+  rocksNumber: 10,
+  rocksCoords: [],
 };
 
 export const snakeSlice = createSlice({
@@ -35,6 +38,8 @@ export const snakeSlice = createSlice({
       state.prevPieceCoords = [null, null];
       state.score = 0;
       state.isGameOver = false;
+      state.rocksCoords = [];
+      state.newPieceCoords = [];
       localStorage.clear();
     },
     setDivCoordinates(state) {
@@ -50,20 +55,6 @@ export const snakeSlice = createSlice({
       };
       state.fieldProps = fieldGenerator(state.width, state.height);
       state.headCoords = [Math.floor(state.height / 2), Math.floor(state.width / 2)];
-
-      const getCoords = () => {
-        let xCoord = Math.ceil(Math.random() * state.height);
-        let yCoord = Math.ceil(Math.random() * state.width);
-        const body = (x, y) => {
-          for (let i = 0; i < state.snakeBody.length - 1; i++) {
-            if (state.snakeBody[i][0] === x && state.snakeBody[i][1] === y) {
-              getCoords();
-            }
-          }
-        };
-        body(xCoord, yCoord);
-      };
-      getCoords();
     },
 
     setHeadCoords(state) {
@@ -105,7 +96,7 @@ export const snakeSlice = createSlice({
           break;
         }
       }
-      for (let i = 0; i < state.snakeBody.length - 1; i++) {
+      for (let i = 0; i <= state.snakeBody.length - 1; i++) {
         if (
           state.snakeBody[i][0] === state.headCoords[0] &&
           state.snakeBody[i][1] === state.headCoords[1]
@@ -114,6 +105,14 @@ export const snakeSlice = createSlice({
         }
       }
       state.snakeBody.push(state.headCoords);
+      for (let i = 0; i <= state.rocksCoords.length - 1; i++) {
+        if (
+          state.rocksCoords[i][0] === state.headCoords[0] &&
+          state.rocksCoords[i][1] === state.headCoords[1]
+        ) {
+          state.isGameOver = true;
+        }
+      }
     },
     keyAction(state, action) {
       switch (action.payload) {
@@ -144,24 +143,37 @@ export const snakeSlice = createSlice({
       }
       state.direction = action.payload;
     },
-    setPieceCoords(state) {
+    setPieceCoords(state, action) {
       state.prevPieceCoords = state.newPieceCoords;
-      let xCoord;
-      let yCoord;
-      const getCoords = () => {
-        xCoord = Math.ceil(Math.random() * state.height);
-        yCoord = Math.ceil(Math.random() * state.width);
-        const body = (x, y) => {
-          for (let i = 0; i < state.snakeBody.length - 1; i++) {
+      const getCoords = (type = null) => {
+        let xCoord = Math.ceil(Math.random() * state.height);
+        let yCoord = Math.ceil(Math.random() * state.width);
+        const body = (x, y, type) => {
+          for (let i = 0; i < state.snakeBody.length; i++) {
             if (state.snakeBody[i][0] === x && state.snakeBody[i][1] === y) {
               getCoords();
             }
+            if (type) {
+              for (let j = 0; j < state.rocksCoords.length; j++) {
+                if (state.rocksCoords[j][0] === x && state.rocksCoords[j][1] === y) {
+                  getCoords();
+                }
+              }
+            }
           }
+          return [xCoord, yCoord];
         };
-        body(xCoord, yCoord);
+        return body(xCoord, yCoord, type);
       };
-      getCoords();
-      state.newPieceCoords = [xCoord, yCoord];
+      if (!action.payload) {
+        state.newPieceCoords = getCoords('piece');
+      }
+      if (action.payload === 'rock') {
+        let arr = [...state.circlesCoords];
+        const temp = getCoords();
+        arr.push(temp);
+        state.circlesCoords = arr;
+      }
     },
     increaseScore(state) {
       state.score += 1;
@@ -182,6 +194,12 @@ export const snakeSlice = createSlice({
       state.pause = !state.pause;
       state.showSettings = !state.showSettings;
     },
+    setRockCoords(state, action) {
+      state.rocksCoords = [...state.rocksCoords, action.payload];
+    },
+    setGameOver(state) {
+      state.isGameOver = true;
+    },
   },
 });
 
@@ -197,6 +215,8 @@ export const {
   toggleStartForm,
   setShowRestart,
   toggleSettings,
+  setRockCoords,
+  setGameOver,
 } = snakeSlice.actions;
 
 export default snakeSlice.reducer;

@@ -1,0 +1,27 @@
+.circle{ 
+    z-index: 1;
+    position:absolute;
+    &::after{
+        position:absolute;
+        content: '';
+        width: 20px;
+    height: 20px;
+    border-radius: 100vw;
+    background-color: red;
+    animation: pulse 0.7s 3 linear;
+    }
+    @keyframes pulse {
+        0%{
+            transform: translateY(10px) translateX(10px);
+            opacity: 1;
+            height: 1px;
+            width: 1px;
+        }
+        100%{
+            opacity: 0;
+            height: 20px;
+            width: 20px;
+           
+        }
+    }
+}

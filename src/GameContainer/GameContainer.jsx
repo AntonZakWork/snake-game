@@ -6,6 +6,7 @@ import {
   increaseScore,
   keyAction,
   setDivCoordinates,
+  setGameOver,
   setHeadCoords,
   setPieceCoords,
   toggleSettings,
@@ -14,11 +15,13 @@ import Snakebody from '../Game/Snakebody/Snakebody';
 import Settings from '../Settings/Settings';
 import Apple from '../Apple/Apple';
 import Restart from '../Restart/Restart';
+import Circle from '../Circle/Circle';
 
 const GameContainer = () => {
   const [display, setDisplay] = useState(false);
-  const dispatch = useDispatch();
+  const [remove, setRemove] = useState(true);
   const field = useRef();
+  const dispatch = useDispatch();
   const {
     width,
     height,
@@ -32,34 +35,43 @@ const GameContainer = () => {
     isGameOver,
     fieldProps,
     showSettings,
+    circlesCoords,
+    rocksCoords,
   } = useSelector((state) => state.snake);
-  const [remove, setRemove] = useState(true);
   useEffect(() => {
     field.current.focus();
     dispatch(setDivCoordinates());
     dispatch(setPieceCoords());
   }, [height, width, snakeSpeed]);
-  useEffect(() => {
-    dispatch(setPieceCoords());
-  }, []);
+
   useEffect(() => {
     field.current.focus();
   }, [isGameOver, showSettings]);
+
   useEffect(() => {
     if (pause || isGameOver) return;
     if (headCoords[0] === newPieceCoords[0] && headCoords[1] === newPieceCoords[1]) {
+      console.log('boom');
       dispatch(setPieceCoords());
       dispatch(increaseScore());
     }
+
     const timeout = setTimeout(() => dispatch(setHeadCoords()), snakeSpeed);
     return () => clearTimeout(timeout);
-  }, [headCoords, pause, isGameOver]);
+  }, [headCoords, rocksCoords, pause, isGameOver]);
 
   useEffect(() => {
     if (pause || isGameOver) return;
     const timeoutNewPiece = setTimeout(() => dispatch(setPieceCoords()), 8000);
     return () => clearTimeout(timeoutNewPiece);
   }, [newPieceCoords, pause, isGameOver]);
+
+  useEffect(() => {
+    if (pause || isGameOver) return;
+    const timeoutRock = setTimeout(() => dispatch(setPieceCoords('rock')), 7000);
+    return () => clearTimeout(timeoutRock);
+  }, [circlesCoords, pause, isGameOver]);
+
   return (
     <>
       <div
@@ -133,10 +145,13 @@ const GameContainer = () => {
           ''
         )}
         {display &&
-          snakeBody.map((el) => {
-            return <Snakebody key={el} el={el} />;
+          snakeBody.map((el, index) => {
+            return <Snakebody key={`${el} + ${index}`} el={el} />;
           })}
-        {display && <Apple newPieceCoords={newPieceCoords} />}
+        {display &&
+          !!circlesCoords.length &&
+          circlesCoords.map((el) => <Circle key={`${Date.now()}+${el}`} circleCoords={el} />)}
+        {display && !!newPieceCoords.length && <Apple newPieceCoords={newPieceCoords} />}
         <Game
           isGameOver={isGameOver}
           divCoordinates={divCoordinates}

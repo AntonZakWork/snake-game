@@ -1,0 +1,30 @@
+.rock{
+    width: 20px;
+    height: 20px;
+    position:absolute;
+    top: 0;
+    left:0;
+    svg{
+        z-index: 1;
+        position: relative;
+        opacity:0;
+        animation: rockFall 0.1s linear forwards;
+        @keyframes rockFall {
+            0%{
+                width: 150px;
+                height: 150px;
+                top: -300px;
+                opacity: 0.6
+            }
+            100%{
+                width: 20px;
+                height: 20px;
+                transform: scale (1.0);
+                top: 0;
+                opacity: 1;
+            }
+        }
+    }
+}
+
+

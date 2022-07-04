@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
-import { setFormData, toggleSettings, toggleStartForm } from '../Store/snakeSlice';
+import { reset, setFormData, toggleSettings, toggleStartForm } from '../Store/snakeSlice';
 import './Form.scss';
 const Form = ({ setRemove }) => {
   const { showSettings } = useSelector((state) => state.snake);
@@ -73,7 +73,17 @@ const Form = ({ setRemove }) => {
         </div>
         {showSettings ? (
           <>
-            <button onClick={handleSubmit(onSubmit)}>Restart now</button>{' '}
+            <button
+              onClick={(e) => {
+                e.preventDefault();
+                const values = getValues();
+                localStorage.setItem('values', JSON.stringify(values));
+                setRemove((prev) => !prev);
+                dispatch(toggleSettings());
+                dispatch(reset());
+              }}>
+              Restart now
+            </button>{' '}
             <button
               onClick={(e) => {
                 e.preventDefault();
