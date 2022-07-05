@@ -1,11 +1,18 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import './Rock.scss';
 import { ReactComponent as RockSVG } from '../assets/svg/rock.svg';
+import { useDispatch } from 'react-redux';
+import { resetRocks } from '../Store/snakeSlice';
 
 const Rock = React.memo(({ rockCoords }) => {
   const [top, left] = rockCoords;
-
-  let coords = { top: `${top}px`, left: `${left}px` };
+  const dispatch = useDispatch();
+  useEffect(() => {
+    return () => {
+      dispatch(resetRocks());
+    };
+  }, []);
+  let coords = { top: `${top * 21}px`, left: `${left * 21}px` };
 
   return (
     <>

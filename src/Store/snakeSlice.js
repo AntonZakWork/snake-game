@@ -19,7 +19,7 @@ const initialState = {
   showRestart: false,
   showSettings: false,
   circlesCoords: [],
-  rocksNumber: 10,
+  rocksNumber: 3,
   rocksCoords: [],
 };
 
@@ -39,6 +39,7 @@ export const snakeSlice = createSlice({
       state.score = 0;
       state.isGameOver = false;
       state.rocksCoords = [];
+      state.circlesCoords = [];
       state.newPieceCoords = [];
       localStorage.clear();
     },
@@ -169,9 +170,11 @@ export const snakeSlice = createSlice({
         state.newPieceCoords = getCoords('piece');
       }
       if (action.payload === 'rock') {
-        let arr = [...state.circlesCoords];
-        const temp = getCoords();
-        arr.push(temp);
+        let arr = [];
+        for (let i = 0; i < state.rocksNumber; i++) {
+          const temp = getCoords();
+          arr.push(temp);
+        }
         state.circlesCoords = arr;
       }
     },
@@ -200,6 +203,9 @@ export const snakeSlice = createSlice({
     setGameOver(state) {
       state.isGameOver = true;
     },
+    resetRocks(state) {
+      state.rocksCoords = [];
+    },
   },
 });
 
@@ -217,6 +223,7 @@ export const {
   toggleSettings,
   setRockCoords,
   setGameOver,
+  resetRocks,
 } = snakeSlice.actions;
 
 export default snakeSlice.reducer;

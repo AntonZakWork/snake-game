@@ -16,6 +16,7 @@ import Settings from '../Settings/Settings';
 import Apple from '../Apple/Apple';
 import Restart from '../Restart/Restart';
 import Circle from '../Circle/Circle';
+import StoneLayer from '../StoneLayer.jsx/StoneLayer';
 
 const GameContainer = () => {
   const [display, setDisplay] = useState(false);
@@ -51,11 +52,9 @@ const GameContainer = () => {
   useEffect(() => {
     if (pause || isGameOver) return;
     if (headCoords[0] === newPieceCoords[0] && headCoords[1] === newPieceCoords[1]) {
-      console.log('boom');
       dispatch(setPieceCoords());
       dispatch(increaseScore());
     }
-
     const timeout = setTimeout(() => dispatch(setHeadCoords()), snakeSpeed);
     return () => clearTimeout(timeout);
   }, [headCoords, rocksCoords, pause, isGameOver]);
@@ -67,11 +66,13 @@ const GameContainer = () => {
   }, [newPieceCoords, pause, isGameOver]);
 
   useEffect(() => {
+    dispatch(setPieceCoords('rock'));
+  }, []);
+  useEffect(() => {
     if (pause || isGameOver) return;
-    const timeoutRock = setTimeout(() => dispatch(setPieceCoords('rock')), 7000);
+    const timeoutRock = setTimeout(() => dispatch(setPieceCoords('rock')), 8000);
     return () => clearTimeout(timeoutRock);
   }, [circlesCoords, pause, isGameOver]);
-
   return (
     <>
       <div
@@ -148,10 +149,8 @@ const GameContainer = () => {
           snakeBody.map((el, index) => {
             return <Snakebody key={`${el} + ${index}`} el={el} />;
           })}
-        {display &&
-          !!circlesCoords.length &&
-          circlesCoords.map((el) => <Circle key={`${Date.now()}+${el}`} circleCoords={el} />)}
         {display && !!newPieceCoords.length && <Apple newPieceCoords={newPieceCoords} />}
+        {!isGameOver && <StoneLayer circlesCoords={circlesCoords} />}
         <Game
           isGameOver={isGameOver}
           divCoordinates={divCoordinates}

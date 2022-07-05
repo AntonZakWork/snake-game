@@ -8,13 +8,13 @@
         z-index: 1;
         position: relative;
         opacity:0;
-        animation: rockFall 0.1s linear forwards;
+        animation: rockFall 0.2s linear forwards;
         @keyframes rockFall {
             0%{
                 width: 150px;
                 height: 150px;
-                top: -300px;
-                opacity: 0.6
+                top: -500px;
+                opacity: 0.7
             }
             100%{
                 width: 20px;

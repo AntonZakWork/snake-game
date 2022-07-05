@@ -4,7 +4,6 @@ import { setRockCoords } from '../Store/snakeSlice';
 import { useDispatch } from 'react-redux';
 import Rock from '../Rock/Rock';
 const Circle = React.memo(({ circleCoords }) => {
-  console.log(circleCoords);
   const [showCircle, setShowCircle] = useState(true);
   const dispatch = useDispatch();
   useEffect(() => {
@@ -12,13 +11,7 @@ const Circle = React.memo(({ circleCoords }) => {
   }, [circleCoords]);
 
   const [top, left] = circleCoords;
-  const setRocksCoordinates = (top, left) => {
-    const topCoord = top * 21;
-    const leftCoord = left * 21;
-    let coords;
-    coords = { top: `${topCoord}px`, left: `${leftCoord}px` };
-    return coords;
-  };
+  let coords = { top: `${top * 21}px`, left: `${left * 21}px` };
   return (
     <>
       {showCircle ? (
@@ -28,7 +21,7 @@ const Circle = React.memo(({ circleCoords }) => {
             dispatch(setRockCoords(circleCoords));
           }}
           className="circle"
-          style={setRocksCoordinates(top, left)}></div>
+          style={coords}></div>
       ) : (
         <Rock rockCoords={circleCoords} />
       )}
