@@ -21,6 +21,7 @@ const initialState = {
   circlesCoords: [],
   rocksNumber: 3,
   rocksCoords: [],
+  keyTiming: null,
 };
 
 export const snakeSlice = createSlice({
@@ -29,10 +30,11 @@ export const snakeSlice = createSlice({
   reducers: {
     reset(state) {
       if (localStorage.getItem('values')) {
-        const { height, width, snakeSpeed } = JSON.parse(localStorage.getItem('values'));
+        let { height, width, snakeSpeed } = JSON.parse(localStorage.getItem('values'));
         state.height = +height;
         state.width = +width;
-        state.snakeSpeed = +snakeSpeed;
+        if (snakeSpeed < 20) snakeSpeed = 20;
+        state.snakeSpeed = state.maxSnakeSpeed / (snakeSpeed / 100);
       }
       state.snakeBody = [];
       state.prevPieceCoords = [null, null];
@@ -116,6 +118,12 @@ export const snakeSlice = createSlice({
       }
     },
     keyAction(state, action) {
+      const timing = Date.now();
+      if (timing - state.keyTiming < 40) {
+        debugger;
+        return state;
+      }
+      state.keyTiming = timing;
       switch (action.payload) {
         default:
           return state;
