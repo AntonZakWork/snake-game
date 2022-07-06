@@ -4,6 +4,7 @@
     height: 20px;
     
     svg{
+        z-index:5;
         animation: increase 1.5s infinite ease-in-out 0.7s;
     }
     
