@@ -4,22 +4,23 @@ import { ReactComponent as GreenApple } from '../assets/svg/green_apple.svg';
 import { ReactComponent as Berry } from '../assets/svg/berry.svg';
 import { ReactComponent as Strawberry } from '../assets/svg/strawberry.svg';
 import React from 'react';
+import { Coords } from '../Types/SnakeTypes';
 
-const Apple = React.memo(({ newPieceCoords }) => {
-  const fruitArray = [RedApple, GreenApple, Berry, Strawberry];
-  const chooseFruit = (fruitArray) => {
+type AppleProps = {
+    newPieceCoords: Coords
+}
+
+type FruitArray = React.FC<React.SVGProps<SVGSVGElement>>[]
+
+const Apple: React.FC<AppleProps> = React.memo(({ newPieceCoords }) => {
+  const fruitArray: FruitArray = [RedApple, GreenApple, Berry, Strawberry];
+  const chooseFruit = (fruitArray: FruitArray): React.FC<React.SVGProps<SVGSVGElement>> => {
     return fruitArray[Math.floor(Math.random() * fruitArray.length)];
   };
   const Item = chooseFruit(fruitArray);
   const [top, left] = newPieceCoords;
-  const setAppleCoordinates = (top, left) => {
-    const topCoord = top * 21;
-    const leftCoord = left * 21;
-    const coords = { top: `${topCoord}px`, left: `${leftCoord}px` };
-    return coords;
-  };
   return (
-    <div className="newPiece" style={setAppleCoordinates(top, left)}>
+    <div className="newPiece" style={{ top: `${top*21}px`, left: `${left*21}px` }}>
       <Item />
     </div>
   );

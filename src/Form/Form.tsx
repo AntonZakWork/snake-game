@@ -1,13 +1,19 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { useDispatch, useSelector } from 'react-redux';
+import { useAppDispatch } from '../Hooks/useAppDispatch';
+import { useTypedSelector } from '../Hooks/useTypedSelector';
 import { reset, setFormData, toggleSettings, toggleStartForm } from '../Store/snakeSlice';
+import { FormData } from '../Types/SnakeTypes';
 import './Form.scss';
-const Form = ({ setRemove }) => {
-  const { showSettings } = useSelector((state) => state.snake);
+type FormProps = {
+    setRemove: React.Dispatch<React.SetStateAction<boolean>>
+}
+
+const Form: React.FC<FormProps> = ({ setRemove }) => {
+  const { showSettings } = useTypedSelector((state) => state.snake);
   const maxHeight = Math.floor((window.innerHeight - 220) / 16);
   const maxWidth = Math.floor((window.innerWidth - 350) / 16);
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const [removeForm, setRemoveForm] = useState(false);
   const onAnimationEnd = () => {
     dispatch(toggleStartForm());
@@ -18,12 +24,12 @@ const Form = ({ setRemove }) => {
     setValue,
     getValues,
     formState: { errors },
-  } = useForm({ defaultValues: { height: 20, width: 20 } });
-  const buttonRef = useRef();
+  } = useForm({ defaultValues: { height: 20, width: 20, snakeSpeed: 50 } });
+  const buttonRef = useRef<HTMLButtonElement>(null);
   useEffect(() => {
-    !showSettings && buttonRef.current.focus();
+    !showSettings && buttonRef.current!.focus();
   }, []);
-  const onSubmit = (data) => {
+  const onSubmit = (data: FormData) => {
     dispatch(setFormData(data));
     setRemoveForm(true);
     if (showSettings) {
@@ -39,7 +45,7 @@ const Form = ({ setRemove }) => {
       <form>
         <div className="prop">
           <div>Field height</div>
-          <div className="tip" onClick={() => setValue('height', `${maxHeight}`)}>
+          <div className="tip" onClick={() => setValue('height', maxHeight)}>
             Set max for my screen
           </div>
           <input
@@ -54,7 +60,7 @@ const Form = ({ setRemove }) => {
         </div>
         <div className="prop">
           <div>Field width</div>
-          <div className="tip" onClick={() => setValue('width', `${maxWidth}`)}>
+          <div className="tip" onClick={() => setValue('width', maxWidth)}>
             Set max for my screen
           </div>
           <input

@@ -1,11 +1,18 @@
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import Form from '../Form/Form';
+import { useAppDispatch } from '../Hooks/useAppDispatch';
+import { useTypedSelector } from '../Hooks/useTypedSelector';
 import { toggleSettings } from '../Store/snakeSlice';
 import './Settings.scss';
-const Settings = ({ remove, setRemove }) => {
-  const { showSettings } = useSelector((state) => state.snake);
-  const dispatch = useDispatch();
+
+type SettingsProps = {
+    remove: boolean
+    setRemove: React.Dispatch<React.SetStateAction<boolean>>
+}
+
+const Settings: React.FC<SettingsProps> = ({ remove, setRemove }) => {
+  const { showSettings } = useTypedSelector((state) => state.snake);
+  const dispatch = useAppDispatch();
   return (
     <>
       {showSettings && (

@@ -1,11 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import './Circle.scss';
 import { setRockCoords } from '../Store/snakeSlice';
-import { useDispatch } from 'react-redux';
 import Rock from '../Rock/Rock';
-const Circle = React.memo(({ circleCoords }) => {
+import { Coords } from '../Types/SnakeTypes';
+import { useAppDispatch } from '../Hooks/useAppDispatch';
+
+type CircleProps = {
+    circleCoords: Coords
+}
+const Circle: React.FC<CircleProps> = React.memo(({ circleCoords }) => {
   const [showCircle, setShowCircle] = useState(true);
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   useEffect(() => {
     setShowCircle(true);
   }, [circleCoords]);

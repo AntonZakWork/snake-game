@@ -6,7 +6,6 @@ import {
   increaseScore,
   keyAction,
   setDivCoordinates,
-  setGameOver,
   setHeadCoords,
   setPieceCoords,
   toggleSettings,
@@ -15,13 +14,14 @@ import Snakebody from '../Game/Snakebody/Snakebody';
 import Settings from '../Settings/Settings';
 import Apple from '../Apple/Apple';
 import Restart from '../Restart/Restart';
-import Circle from '../Circle/Circle';
 import StoneLayer from '../StoneLayer.jsx/StoneLayer';
+import { useTypedSelector } from '../Hooks/useTypedSelector';
+import { Coords, Directions } from '../Types/SnakeTypes';
 
 const GameContainer = () => {
   const [display, setDisplay] = useState(false);
   const [remove, setRemove] = useState(true);
-  const field = useRef();
+  const field = useRef<HTMLDivElement>(null);
   const dispatch = useDispatch();
   const {
     width,
@@ -38,15 +38,16 @@ const GameContainer = () => {
     showSettings,
     circlesCoords,
     rocksCoords,
-  } = useSelector((state) => state.snake);
+  } = useTypedSelector((state) => state.snake);
+
   useEffect(() => {
-    field.current.focus();
+    field.current?.focus();
     dispatch(setDivCoordinates());
     dispatch(setPieceCoords());
   }, [height, width, snakeSpeed]);
 
   useEffect(() => {
-    field.current.focus();
+    field.current?.focus();
   }, [isGameOver, showSettings]);
 
   useEffect(() => {
@@ -55,7 +56,7 @@ const GameContainer = () => {
       dispatch(setPieceCoords());
       dispatch(increaseScore());
     }
-    const timeout = setTimeout(() => dispatch(setHeadCoords()), snakeSpeed);
+    const timeout = setTimeout(() => dispatch(setHeadCoords()), snakeSpeed!);
     return () => clearTimeout(timeout);
   }, [headCoords, rocksCoords, pause, isGameOver]);
 
@@ -120,9 +121,10 @@ const GameContainer = () => {
       <div
         className="gameContainer"
         ref={field}
-        tabIndex="0"
-        onKeyDown={(e) => {
-          dispatch(keyAction(e.key));
+        tabIndex={0}
+        onKeyDown={(e:React.KeyboardEvent) => {
+          // ???
+          dispatch(keyAction(e.key as Directions));
         }}>
         {pause ? (
           <div className="pauseIcon">
@@ -149,12 +151,12 @@ const GameContainer = () => {
           snakeBody.map((el, index) => {
             return <Snakebody key={`${el} + ${index}`} el={el} />;
           })}
-        {display && !!newPieceCoords.length && <Apple newPieceCoords={newPieceCoords} />}
-        {!isGameOver && <StoneLayer circlesCoords={circlesCoords} />}
+        {display && !!newPieceCoords.length && <Apple newPieceCoords={newPieceCoords as Coords} />}
+        {!isGameOver && <StoneLayer circlesCoords={circlesCoords as Coords[]} />}
         <Game
           isGameOver={isGameOver}
           divCoordinates={divCoordinates}
-          fieldProps={fieldProps}
+          fieldProps={fieldProps!}
           setDisplay={setDisplay}
         />
       </div>

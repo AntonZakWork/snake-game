@@ -2,10 +2,18 @@ import React from 'react';
 import './Game.scss';
 import Cell from '../Cell';
 import { setPieceCoords } from '../Store/snakeSlice';
-import { useDispatch } from 'react-redux';
+import { FieldProps } from '../Types/SnakeTypes';
+import { useAppDispatch } from '../Hooks/useAppDispatch';
 
-const Game = React.memo(({ isGameOver, fieldProps, divCoordinates, setDisplay }) => {
-  const dispatch = useDispatch();
+type GameProps = {
+    isGameOver: boolean;
+    fieldProps: FieldProps,
+    divCoordinates: number[],
+    setDisplay: (x: boolean)=>void
+}
+
+const Game: React.FC<GameProps> = React.memo(({ isGameOver, fieldProps, divCoordinates, setDisplay }) => {
+  const dispatch = useAppDispatch();
   return (
     <>
       <div

@@ -1,6 +1,8 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { SnakeState, StoredData, FieldProps, Coords, Directions, FormData } from './../Types/SnakeTypes';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { Direction } from 'readline';
 
-const initialState = {
+const initialState: SnakeState = {
   height: null,
   width: null,
   divCoordinates: [],
@@ -30,7 +32,7 @@ export const snakeSlice = createSlice({
   reducers: {
     reset(state) {
       if (localStorage.getItem('values')) {
-        let { height, width, snakeSpeed } = JSON.parse(localStorage.getItem('values'));
+        let { height, width, snakeSpeed }: StoredData = JSON.parse(localStorage.getItem('values') as string);
         state.height = +height;
         state.width = +width;
         if (snakeSpeed < 20) snakeSpeed = 20;
@@ -42,26 +44,26 @@ export const snakeSlice = createSlice({
       state.isGameOver = false;
       state.rocksCoords = [];
       state.circlesCoords = [];
-      state.newPieceCoords = [];
+      state.newPieceCoords = [null, null];
       localStorage.clear();
     },
     setDivCoordinates(state) {
       state.divCoordinates = [];
-      for (let i = 1; i <= state.height * state.width; i++) {
+      for (let i = 1; i <= state.height! * state.width!; i++) {
         state.divCoordinates.push(i);
       }
-      const fieldGenerator = (width, height) => {
+      const fieldGenerator = (width: number, height: number):FieldProps => {
         return {
           gridTemplateColumns: `repeat(${width}, auto)`,
           gridTemplateRows: `repeat(${height}, auto)`,
         };
       };
-      state.fieldProps = fieldGenerator(state.width, state.height);
-      state.headCoords = [Math.floor(state.height / 2), Math.floor(state.width / 2)];
+      state.fieldProps = fieldGenerator(state.width!, state.height!);
+      state.headCoords  = [Math.floor(state.height! / 2), Math.floor(state.width! / 2)];
     },
 
     setHeadCoords(state) {
-      if (state.snakeBody.length === 0) state.snakeBody.push(state.headCoords);
+      if (state.snakeBody.length === 0) state.snakeBody.push(state.headCoords as Coords);
       if (
         !(
           state.headCoords[0] === state.prevPieceCoords[0] &&
@@ -75,26 +77,26 @@ export const snakeSlice = createSlice({
         default:
           return state;
         case 'ArrowUp': {
-          const newCoords = [state.headCoords[0] - 1, state.headCoords[1]];
-          if (newCoords[0] < 1) newCoords[0] = state.height;
+          const newCoords:Coords = [state.headCoords[0]! - 1, state.headCoords[1]!];
+          if (newCoords[0]! < 1) newCoords[0] = state.height!;
           state.headCoords = newCoords;
           break;
         }
         case 'ArrowDown': {
-          const newCoords = [state.headCoords[0] + 1, state.headCoords[1]];
-          if (newCoords[0] > state.height) newCoords[0] = 1;
+          const newCoords: Coords = [state.headCoords[0]! + 1, state.headCoords[1]!];
+          if (newCoords[0] > state.height!) newCoords[0] = 1;
           state.headCoords = newCoords;
           break;
         }
         case 'ArrowLeft': {
-          const newCoords = [state.headCoords[0], state.headCoords[1] - 1];
-          if (newCoords[1] < 1) newCoords[1] = state.width;
+          const newCoords: Coords = [state.headCoords[0]!, state.headCoords[1]! - 1];
+          if (newCoords[1] < 1) newCoords[1] = state.width!;
           state.headCoords = newCoords;
           break;
         }
         case 'ArrowRight': {
-          const newCoords = [state.headCoords[0], state.headCoords[1] + 1];
-          if (newCoords[1] > state.width) newCoords[1] = 1;
+          const newCoords: Coords = [state.headCoords[0]!, state.headCoords[1]! + 1];
+          if (newCoords[1] > state.width!) newCoords[1] = 1;
           state.headCoords = newCoords;
           break;
         }
@@ -117,9 +119,9 @@ export const snakeSlice = createSlice({
         }
       }
     },
-    keyAction(state, action) {
+    keyAction(state, action: PayloadAction<Directions>) {
       const timing = Date.now();
-      if (timing - state.keyTiming < 40) {
+      if (state.keyTiming && timing - state.keyTiming < 40) {
         debugger;
         return state;
       }
@@ -152,12 +154,12 @@ export const snakeSlice = createSlice({
       }
       state.direction = action.payload;
     },
-    setPieceCoords(state, action) {
+    setPieceCoords(state, action: PayloadAction<string | undefined>) {
       state.prevPieceCoords = state.newPieceCoords;
-      const getCoords = (type = null) => {
-        let xCoord = Math.ceil(Math.random() * state.height);
-        let yCoord = Math.ceil(Math.random() * state.width);
-        const body = (x, y, type) => {
+      const getCoords = (type?: string): Coords => {
+        let xCoord = Math.ceil(Math.random() * state.height!);
+        let yCoord = Math.ceil(Math.random() * state.width!);
+        const body = (x: number, y: number, type: string | undefined): Coords => {
           for (let i = 0; i < state.snakeBody.length; i++) {
             if (state.snakeBody[i][0] === x && state.snakeBody[i][1] === y) {
               getCoords();
@@ -178,7 +180,7 @@ export const snakeSlice = createSlice({
         state.newPieceCoords = getCoords('piece');
       }
       if (action.payload === 'rock') {
-        let arr = [];
+        let arr: Coords[] = [];
         for (let i = 0; i < state.rocksNumber; i++) {
           const temp = getCoords();
           arr.push(temp);
@@ -189,12 +191,13 @@ export const snakeSlice = createSlice({
     increaseScore(state) {
       state.score += 1;
     },
-    setFormData(state, action) {
+    setFormData(state, action: PayloadAction<FormData>) {
+        debugger
       state.snakeBody = [];
       const { height, width, snakeSpeed } = action.payload;
-      state.height = +height;
-      state.width = +width;
-      let snakeSpeedNum = +snakeSpeed;
+      state.height = height;
+      state.width = width;
+      let snakeSpeedNum = snakeSpeed;
       if (snakeSpeedNum < 20) snakeSpeedNum = 20;
       state.snakeSpeed = state.maxSnakeSpeed / (snakeSpeedNum / 100);
     },
@@ -222,12 +225,10 @@ export const {
   setHeadCoords,
   keyAction,
   setPieceCoords,
-  changeSnakeLength,
   increaseScore,
   reset,
   setFormData,
   toggleStartForm,
-  setShowRestart,
   toggleSettings,
   setRockCoords,
   setGameOver,

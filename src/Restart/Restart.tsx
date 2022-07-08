@@ -1,13 +1,13 @@
 import React, { useEffect, useRef } from 'react';
-import { useDispatch } from 'react-redux';
+import { useAppDispatch } from '../Hooks/useAppDispatch';
 import { reset } from '../Store/snakeSlice';
 import './Restart.scss';
 const Restart = () => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   useEffect(() => {
-    restartRef.current.focus();
+    restartRef.current?.focus();
   }, []);
-  const restartRef = useRef();
+  const restartRef = useRef<HTMLButtonElement>(null);
   return (
     <div className="restartContainer">
       <div className="text">You lose!</div>
