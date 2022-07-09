@@ -11,8 +11,8 @@ type FormProps = {
 
 const Form: React.FC<FormProps> = ({ setRemove }) => {
   const { showSettings } = useTypedSelector((state) => state.snake);
-  const maxHeight = Math.floor((window.innerHeight - 220) / 16);
-  const maxWidth = Math.floor((window.innerWidth - 350) / 16);
+  const maxHeight = Math.floor(Math.max(((window.innerHeight - 220) / 16), 3));
+  const maxWidth = Math.floor(Math.max(((window.innerWidth - 350) / 16), 3));
   const dispatch = useAppDispatch();
   const [removeForm, setRemoveForm] = useState(false);
   const onAnimationEnd = () => {
@@ -24,12 +24,13 @@ const Form: React.FC<FormProps> = ({ setRemove }) => {
     setValue,
     getValues,
     formState: { errors },
-  } = useForm({ defaultValues: { height: 20, width: 20, snakeSpeed: 50 } });
+  } = useForm({ defaultValues: { height: 20, width: 20, snakeSpeed: 50, stonesAmount: 50 } });
   const buttonRef = useRef<HTMLButtonElement>(null);
   useEffect(() => {
     !showSettings && buttonRef.current!.focus();
   }, []);
-  const onSubmit = (data: FormData) => {
+  const onSubmit = (data: FormData): void => {
+    dispatch(reset())
     dispatch(setFormData(data));
     setRemoveForm(true);
     if (showSettings) {
@@ -37,7 +38,21 @@ const Form: React.FC<FormProps> = ({ setRemove }) => {
       dispatch(toggleSettings());
     }
   };
-
+  const onSubmitSave = () => {
+    const values = getValues();
+    localStorage.setItem('values', JSON.stringify(values));
+    setRemove((prev) => !prev);
+    dispatch(toggleSettings());
+  }
+  const onSubmitRestart = (data: FormData) => {
+    dispatch(reset());
+    dispatch(setFormData(data));
+    const values = getValues();
+    localStorage.setItem('values', JSON.stringify(values));
+    setRemove((prev) => !prev);
+    dispatch(toggleSettings());
+    
+  }
   return (
     <div
       className={removeForm ? 'formContainer remove' : 'formContainer'}
@@ -77,27 +92,18 @@ const Form: React.FC<FormProps> = ({ setRemove }) => {
           <div>Snake speed</div>
           <input type="range" placeholder="Snake speed" {...register('snakeSpeed', {})} />
         </div>
+        <div className="prop">
+          <div>Amount of rocks</div>
+          <input type="range" placeholder="Amount of stones" {...register('stonesAmount', {})} />
+        </div>
         {showSettings ? (
           <>
             <button
-              onClick={(e) => {
-                e.preventDefault();
-                const values = getValues();
-                localStorage.setItem('values', JSON.stringify(values));
-                setRemove((prev) => !prev);
-                dispatch(toggleSettings());
-                dispatch(reset());
-              }}>
+              onClick={handleSubmit(onSubmitRestart)}>
               Restart now
             </button>{' '}
             <button
-              onClick={(e) => {
-                e.preventDefault();
-                const values = getValues();
-                localStorage.setItem('values', JSON.stringify(values));
-                setRemove((prev) => !prev);
-                dispatch(toggleSettings());
-              }}>
+              onClick={handleSubmit(onSubmitSave)}>
               Apply on the next game
             </button>
           </>

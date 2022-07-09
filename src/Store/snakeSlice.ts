@@ -1,6 +1,5 @@
 import { SnakeState, StoredData, FieldProps, Coords, Directions, FormData } from './../Types/SnakeTypes';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { Direction } from 'readline';
 
 const initialState: SnakeState = {
   height: null,
@@ -9,9 +8,9 @@ const initialState: SnakeState = {
   fieldProps: null,
   headCoords: [null, null],
   direction: 'ArrowUp',
-  newPieceCoords: [null, null],
+  newPieceCoords: [],
   snakeBody: [],
-  prevPieceCoords: [null, null],
+  prevPieceCoords: [],
   isGameOver: false,
   score: 0,
   showStartForm: true,
@@ -21,7 +20,7 @@ const initialState: SnakeState = {
   showRestart: false,
   showSettings: false,
   circlesCoords: [],
-  rocksNumber: 3,
+  stonesAmount: null,
   rocksCoords: [],
   keyTiming: null,
 };
@@ -31,7 +30,9 @@ export const snakeSlice = createSlice({
   initialState,
   reducers: {
     reset(state) {
+        
       if (localStorage.getItem('values')) {
+        
         let { height, width, snakeSpeed }: StoredData = JSON.parse(localStorage.getItem('values') as string);
         state.height = +height;
         state.width = +width;
@@ -39,15 +40,16 @@ export const snakeSlice = createSlice({
         state.snakeSpeed = state.maxSnakeSpeed / (snakeSpeed / 100);
       }
       state.snakeBody = [];
-      state.prevPieceCoords = [null, null];
+      state.prevPieceCoords = [];
       state.score = 0;
       state.isGameOver = false;
       state.rocksCoords = [];
       state.circlesCoords = [];
-      state.newPieceCoords = [null, null];
+      state.newPieceCoords = [];
       localStorage.clear();
     },
     setDivCoordinates(state) {
+        
       state.divCoordinates = [];
       for (let i = 1; i <= state.height! * state.width!; i++) {
         state.divCoordinates.push(i);
@@ -71,7 +73,7 @@ export const snakeSlice = createSlice({
         )
       ) {
         state.snakeBody.shift();
-        state.prevPieceCoords = [null, null];
+        state.prevPieceCoords = [];
       }
       switch (state.direction) {
         default:
@@ -122,7 +124,6 @@ export const snakeSlice = createSlice({
     keyAction(state, action: PayloadAction<Directions>) {
       const timing = Date.now();
       if (state.keyTiming && timing - state.keyTiming < 40) {
-        debugger;
         return state;
       }
       state.keyTiming = timing;
@@ -162,12 +163,13 @@ export const snakeSlice = createSlice({
         const body = (x: number, y: number, type: string | undefined): Coords => {
           for (let i = 0; i < state.snakeBody.length; i++) {
             if (state.snakeBody[i][0] === x && state.snakeBody[i][1] === y) {
-              getCoords();
+                debugger
+              return  getCoords();
             }
             if (type) {
               for (let j = 0; j < state.rocksCoords.length; j++) {
                 if (state.rocksCoords[j][0] === x && state.rocksCoords[j][1] === y) {
-                  getCoords();
+                  return getCoords();
                 }
               }
             }
@@ -181,7 +183,8 @@ export const snakeSlice = createSlice({
       }
       if (action.payload === 'rock') {
         let arr: Coords[] = [];
-        for (let i = 0; i < state.rocksNumber; i++) {
+        
+        for (let i = 0; i < state.stonesAmount!; i++) {
           const temp = getCoords();
           arr.push(temp);
         }
@@ -192,14 +195,15 @@ export const snakeSlice = createSlice({
       state.score += 1;
     },
     setFormData(state, action: PayloadAction<FormData>) {
-        debugger
-      state.snakeBody = [];
-      const { height, width, snakeSpeed } = action.payload;
+      let { height, width, snakeSpeed, stonesAmount } = action.payload;
       state.height = height;
       state.width = width;
-      let snakeSpeedNum = snakeSpeed;
-      if (snakeSpeedNum < 20) snakeSpeedNum = 20;
-      state.snakeSpeed = state.maxSnakeSpeed / (snakeSpeedNum / 100);
+      if (snakeSpeed < 20) snakeSpeed = 20;
+      state.snakeSpeed = state.maxSnakeSpeed / (snakeSpeed / 100);
+      let maxStonesAmount = Math.ceil(height*width*0.02)
+      if (stonesAmount < 20) stonesAmount = 20;
+      state.stonesAmount = maxStonesAmount * (stonesAmount / 100);
+
     },
     toggleStartForm(state) {
       state.showStartForm = false;

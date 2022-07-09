@@ -8,5 +8,19 @@
         background-position:  4px 0, 4px 0, 0 0, 0 0;
         background-size: 4px 4px;
         background-repeat: repeat;
-        
+        &.head{
+            .eyes{
+                position:relative;
+                z-index: 10;
+                background: transparent;
+                svg{
+                    position:absolute;
+                    top: -55px;
+                    left: -55px;
+                    transform: scale(0.175);
+                }
+               
+            }
+        }
 }
+

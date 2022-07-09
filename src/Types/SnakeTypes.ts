@@ -2,6 +2,7 @@ export type FormData = {
     height: number
     width: number
     snakeSpeed: number
+    stonesAmount: number
 }
 export type Coords = [number, number]
 export type NullCoords = [null ,null]
@@ -22,9 +23,9 @@ export interface SnakeState {
     fieldProps: FieldProps | null
     headCoords: Coords | NullCoords
     direction: Directions
-    newPieceCoords: Coords | NullCoords
+    newPieceCoords: Coords | []
     snakeBody: Coords[]  
-    prevPieceCoords: Coords | NullCoords
+    prevPieceCoords: Coords | []
     isGameOver: boolean
     score: number
     showStartForm: boolean
@@ -34,7 +35,7 @@ export interface SnakeState {
     showRestart: boolean
     showSettings: boolean
     circlesCoords: Coords[] 
-    rocksNumber: number
+    stonesAmount: number | null
     rocksCoords: Coords[] 
     keyTiming: number | null
 }

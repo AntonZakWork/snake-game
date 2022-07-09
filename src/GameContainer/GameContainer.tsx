@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
 import '../Game/Game.scss';
 import Game from '../Game/Game';
 import {
@@ -17,12 +16,13 @@ import Restart from '../Restart/Restart';
 import StoneLayer from '../StoneLayer.jsx/StoneLayer';
 import { useTypedSelector } from '../Hooks/useTypedSelector';
 import { Coords, Directions } from '../Types/SnakeTypes';
+import { useAppDispatch } from '../Hooks/useAppDispatch';
 
 const GameContainer = () => {
   const [display, setDisplay] = useState(false);
   const [remove, setRemove] = useState(true);
   const field = useRef<HTMLDivElement>(null);
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const {
     width,
     height,
@@ -38,13 +38,18 @@ const GameContainer = () => {
     showSettings,
     circlesCoords,
     rocksCoords,
+    stonesAmount
   } = useTypedSelector((state) => state.snake);
 
   useEffect(() => {
     field.current?.focus();
     dispatch(setDivCoordinates());
     dispatch(setPieceCoords());
-  }, [height, width, snakeSpeed]);
+  }, [height, width, snakeSpeed, stonesAmount]);
+
+useEffect(()=>{
+    dispatch(setPieceCoords())
+},[])
 
   useEffect(() => {
     field.current?.focus();
@@ -67,10 +72,8 @@ const GameContainer = () => {
   }, [newPieceCoords, pause, isGameOver]);
 
   useEffect(() => {
-    dispatch(setPieceCoords('rock'));
-  }, []);
-  useEffect(() => {
     if (pause || isGameOver) return;
+    
     const timeoutRock = setTimeout(() => dispatch(setPieceCoords('rock')), 8000);
     return () => clearTimeout(timeoutRock);
   }, [circlesCoords, pause, isGameOver]);
@@ -149,9 +152,10 @@ const GameContainer = () => {
         )}
         {display &&
           snakeBody.map((el, index) => {
+            if(index === snakeBody.length-1) return <Snakebody key={`${el} + ${index}`} el={el} headprop = {true}/>
             return <Snakebody key={`${el} + ${index}`} el={el} />;
           })}
-        {display && !!newPieceCoords.length && <Apple newPieceCoords={newPieceCoords as Coords} />}
+        {display && !isGameOver && !!newPieceCoords.length && <Apple newPieceCoords={newPieceCoords as Coords} />}
         {!isGameOver && <StoneLayer circlesCoords={circlesCoords as Coords[]} />}
         <Game
           isGameOver={isGameOver}
