@@ -1,19 +1,24 @@
 {
   "files": {
-    "main.css": "/snake-game/static/css/main.0f478e1d.css",
-    "main.js": "/snake-game/static/js/main.3bcf89c3.js",
+    "main.css": "/snake-game/static/css/main.988c7820.css",
+    "main.js": "/snake-game/static/js/main.3e230c34.js",
     "static/media/Zhizn.otf": "/snake-game/static/media/Zhizn.d6dc30c019cbc4c68676.otf",
     "static/media/strawberry.svg": "/snake-game/static/media/strawberry.83309d89b1c61934e218cc26ec3e837a.svg",
     "static/media/berry.svg": "/snake-game/static/media/berry.31f40a6543a810f8d602a914388968d6.svg",
+    "static/media/ArrowRight.svg": "/snake-game/static/media/ArrowRight.c35196bfdd4b688aac3933474862df10.svg",
+    "static/media/ArrowLeft.svg": "/snake-game/static/media/ArrowLeft.36325c14d45056667aef3c6f4f05c924.svg",
+    "static/media/ArrowDown.svg": "/snake-game/static/media/ArrowDown.dce9ddcc06db93215bc50b7a8e74ff53.svg",
+    "static/media/ArrowUp.svg": "/snake-game/static/media/ArrowUp.3db0cbb384e97041b3eab7d08e4baeac.svg",
     "static/media/green_apple.svg": "/snake-game/static/media/green_apple.b1b57588d73d74eb40078ab6b682c03d.svg",
     "static/media/rock.svg": "/snake-game/static/media/rock.90089445f09f65be98b80187f22bd849.svg",
     "static/media/red_apple.svg": "/snake-game/static/media/red_apple.8350e4c927b162e39261d460d32b4cb4.svg",
+    "static/media/Aim.svg": "/snake-game/static/media/Aim.c4e11dd80b27c6da5b92f0d3557df978.svg",
     "index.html": "/snake-game/index.html",
-    "main.0f478e1d.css.map": "/snake-game/static/css/main.0f478e1d.css.map",
-    "main.3bcf89c3.js.map": "/snake-game/static/js/main.3bcf89c3.js.map"
+    "main.988c7820.css.map": "/snake-game/static/css/main.988c7820.css.map",
+    "main.3e230c34.js.map": "/snake-game/static/js/main.3e230c34.js.map"
   },
   "entrypoints": [
-    "static/css/main.0f478e1d.css",
-    "static/js/main.3bcf89c3.js"
+    "static/css/main.988c7820.css",
+    "static/js/main.3e230c34.js"
   ]
 }
