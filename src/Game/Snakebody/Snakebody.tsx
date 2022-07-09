@@ -3,7 +3,6 @@ import { useTypedSelector } from '../../Hooks/useTypedSelector';
 import { Coords } from '../../Types/SnakeTypes';
 import Eyes from './Eyes/Eyes';
 import './Snakebody.scss';
-// import { ReactComponent as Eyes } from '../../../assets/svg/eyes.svg';
 type SnakeProps = {
     el: Coords
     headprop?: boolean

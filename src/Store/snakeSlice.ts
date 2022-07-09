@@ -23,6 +23,8 @@ const initialState: SnakeState = {
   stonesAmount: null,
   rocksCoords: [],
   keyTiming: null,
+  aimCoords: [],
+  aimInitCoords: [],
 };
 
 export const snakeSlice = createSlice({
@@ -46,6 +48,8 @@ export const snakeSlice = createSlice({
       state.rocksCoords = [];
       state.circlesCoords = [];
       state.newPieceCoords = [];
+      state.aimCoords = [];
+      state.aimInitCoords = [];
       localStorage.clear();
     },
     setDivCoordinates(state) {
@@ -122,11 +126,6 @@ export const snakeSlice = createSlice({
       }
     },
     keyAction(state, action: PayloadAction<Directions>) {
-      const timing = Date.now();
-      if (state.keyTiming && timing - state.keyTiming < 40) {
-        return state;
-      }
-      state.keyTiming = timing;
       switch (action.payload) {
         default:
           return state;
@@ -157,16 +156,29 @@ export const snakeSlice = createSlice({
     },
     setPieceCoords(state, action: PayloadAction<string | undefined>) {
       state.prevPieceCoords = state.newPieceCoords;
+      
       const getCoords = (type?: string): Coords => {
+        
         let xCoord = Math.ceil(Math.random() * state.height!);
         let yCoord = Math.ceil(Math.random() * state.width!);
+        if(type === 'initAim') {
+            return [xCoord, yCoord]
+         }
+         if(type === 'aim') {
+            if(!state.aimCoords.length) {
+                return [state.height!+1, Math.ceil((Math.random()*state.width!))]
+            } else if(state.aimCoords[0] === state.height!+1) {
+                return [1, Math.ceil((Math.random()*state.width!))]
+            } else {
+                return [state.height!+1, (Math.random()*state.width!)]
+            }
+         }
         const body = (x: number, y: number, type: string | undefined): Coords => {
           for (let i = 0; i < state.snakeBody.length; i++) {
             if (state.snakeBody[i][0] === x && state.snakeBody[i][1] === y) {
-                debugger
               return  getCoords();
             }
-            if (type) {
+            if (type === 'rock') {
               for (let j = 0; j < state.rocksCoords.length; j++) {
                 if (state.rocksCoords[j][0] === x && state.rocksCoords[j][1] === y) {
                   return getCoords();
@@ -183,12 +195,19 @@ export const snakeSlice = createSlice({
       }
       if (action.payload === 'rock') {
         let arr: Coords[] = [];
-        
         for (let i = 0; i < state.stonesAmount!; i++) {
           const temp = getCoords();
           arr.push(temp);
         }
         state.circlesCoords = arr;
+      }
+      if (action.payload === 'aim') {
+        if(state.aimInitCoords.length === 0) {
+            state.aimInitCoords = getCoords('initAim')
+        } else { 
+            state.aimInitCoords = state.aimCoords 
+        }
+        state.aimCoords = getCoords('aim')
       }
     },
     increaseScore(state) {

@@ -38,4 +38,6 @@ export interface SnakeState {
     stonesAmount: number | null
     rocksCoords: Coords[] 
     keyTiming: number | null
+    aimCoords: Coords | []
+    aimInitCoords: Coords | []
 }

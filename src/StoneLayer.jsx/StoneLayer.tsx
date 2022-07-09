@@ -10,7 +10,7 @@ const StoneLayer: React.FC<StoneLayerProps> = React.memo(({ circlesCoords }) => 
   return (
     <div className="stoneLayer">
       {circlesCoords.map((el) => (
-        <Circle key={`${Date.now()}+${el}`} circleCoords={el} />
+        <Circle key={`${Date.now()}+${el}+${Math.random()}`} circleCoords={el} />
       ))}
     </div>
   );

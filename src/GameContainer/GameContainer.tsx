@@ -17,8 +17,10 @@ import StoneLayer from '../StoneLayer.jsx/StoneLayer';
 import { useTypedSelector } from '../Hooks/useTypedSelector';
 import { Coords, Directions } from '../Types/SnakeTypes';
 import { useAppDispatch } from '../Hooks/useAppDispatch';
+import Aim from '../Aim/Aim';
 
 const GameContainer = () => {
+    const dateRef = useRef<number | null>(null)
   const [display, setDisplay] = useState(false);
   const [remove, setRemove] = useState(true);
   const field = useRef<HTMLDivElement>(null);
@@ -38,7 +40,9 @@ const GameContainer = () => {
     showSettings,
     circlesCoords,
     rocksCoords,
-    stonesAmount
+    stonesAmount,
+    aimCoords, 
+    aimInitCoords
   } = useTypedSelector((state) => state.snake);
 
   useEffect(() => {
@@ -48,7 +52,9 @@ const GameContainer = () => {
   }, [height, width, snakeSpeed, stonesAmount]);
 
 useEffect(()=>{
+    
     dispatch(setPieceCoords())
+    dispatch(setPieceCoords('aim'))
 },[])
 
   useEffect(() => {
@@ -70,6 +76,12 @@ useEffect(()=>{
     const timeoutNewPiece = setTimeout(() => dispatch(setPieceCoords()), 8000);
     return () => clearTimeout(timeoutNewPiece);
   }, [newPieceCoords, pause, isGameOver]);
+
+  useEffect(() => {
+    if (pause || isGameOver) return;
+    const timeoutNewPiece = setTimeout(() => dispatch(setPieceCoords('aim')), 10000);
+    return () => clearTimeout(timeoutNewPiece);
+  }, [aimCoords, aimInitCoords, pause, isGameOver]);
 
   useEffect(() => {
     if (pause || isGameOver) return;
@@ -127,7 +139,16 @@ useEffect(()=>{
         tabIndex={0}
         onKeyDown={(e:React.KeyboardEvent) => {
           // ???
-          dispatch(keyAction(e.key as Directions));
+          const timedDispatch = (timeout: NodeJS.Timeout)=>{
+            dispatch(keyAction(e.key as Directions))
+            clearTimeout(timeout)
+
+          }
+          const currTiming = Date.now() 
+          if(dateRef.current && ((currTiming - dateRef.current) < snakeSpeed!)) {
+            const dispatchTimeout: NodeJS.Timeout = setTimeout(()=>timedDispatch(dispatchTimeout), snakeSpeed!)
+          } else dispatch(keyAction(e.key as Directions));
+          dateRef.current = currTiming
         }}>
         {pause ? (
           <div className="pauseIcon">
@@ -156,7 +177,8 @@ useEffect(()=>{
             return <Snakebody key={`${el} + ${index}`} el={el} />;
           })}
         {display && !isGameOver && !!newPieceCoords.length && <Apple newPieceCoords={newPieceCoords as Coords} />}
-        {!isGameOver && <StoneLayer circlesCoords={circlesCoords as Coords[]} />}
+        {display && !isGameOver && <StoneLayer circlesCoords={circlesCoords as Coords[]} />}
+        {display && !isGameOver && !!aimCoords.length && !!aimInitCoords.length && <Aim aimCoords = {aimCoords} aimInitCoords = {aimInitCoords}/>}
         <Game
           isGameOver={isGameOver}
           divCoordinates={divCoordinates}
