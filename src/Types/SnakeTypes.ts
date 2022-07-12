@@ -40,4 +40,8 @@ export interface SnakeState {
     keyTiming: number | null
     aimCoords: Coords | []
     aimInitCoords: Coords | []
+    aimPixels: Coords | []
+    headPixels: Coords | []
+    gamePixels: Coords | []
+    fieldPixelBorders: number[] | []
 }

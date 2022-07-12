@@ -55,7 +55,7 @@ useEffect(()=>{
     
     dispatch(setPieceCoords())
     dispatch(setPieceCoords('aim'))
-},[])
+},[isGameOver])
 
   useEffect(() => {
     field.current?.focus();
@@ -79,7 +79,7 @@ useEffect(()=>{
 
   useEffect(() => {
     if (pause || isGameOver) return;
-    const timeoutNewPiece = setTimeout(() => dispatch(setPieceCoords('aim')), 10000);
+    const timeoutNewPiece = setTimeout(() => dispatch(setPieceCoords('aim')), 5000);
     return () => clearTimeout(timeoutNewPiece);
   }, [aimCoords, aimInitCoords, pause, isGameOver]);
 

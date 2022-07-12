@@ -25,6 +25,11 @@ const initialState: SnakeState = {
   keyTiming: null,
   aimCoords: [],
   aimInitCoords: [],
+  aimPixels: [],
+  headPixels: [],
+  gamePixels: [],
+  fieldPixelBorders: [],
+  
 };
 
 export const snakeSlice = createSlice({
@@ -50,6 +55,8 @@ export const snakeSlice = createSlice({
       state.newPieceCoords = [];
       state.aimCoords = [];
       state.aimInitCoords = [];
+      state.headPixels =  [];
+      state.aimPixels = [];
       localStorage.clear();
     },
     setDivCoordinates(state) {
@@ -70,6 +77,9 @@ export const snakeSlice = createSlice({
 
     setHeadCoords(state) {
       if (state.snakeBody.length === 0) state.snakeBody.push(state.headCoords as Coords);
+      if(Math.abs(state.headPixels[0]!-state.aimPixels[0]!) < 10 && Math.abs(state.headPixels[1]!-state.aimPixels[1]!) < 10) {
+        state.isGameOver = true;
+      }
       if (
         !(
           state.headCoords[0] === state.prevPieceCoords[0] &&
@@ -203,7 +213,7 @@ export const snakeSlice = createSlice({
       }
       if (action.payload === 'aim') {
         if(state.aimInitCoords.length === 0) {
-            state.aimInitCoords = getCoords('initAim')
+            state.aimInitCoords = [Math.ceil(state.height!/2), Math.ceil(state.width!/2)]
         } else { 
             state.aimInitCoords = state.aimCoords 
         }
@@ -231,7 +241,7 @@ export const snakeSlice = createSlice({
       state.pause = !state.pause;
       state.showSettings = !state.showSettings;
     },
-    setRockCoords(state, action) {
+    setRockCoords(state, action: PayloadAction<Coords>) {
       state.rocksCoords = [...state.rocksCoords, action.payload];
     },
     setGameOver(state) {
@@ -240,6 +250,27 @@ export const snakeSlice = createSlice({
     resetRocks(state) {
       state.rocksCoords = [];
     },
+    setHeadPixels(state, action: PayloadAction<Coords>) {
+        state.headPixels = action.payload
+        let [x,y] = action.payload
+        state.aimPixels = [x+10, y+10]
+    },
+    setAimPixels(state, action: PayloadAction<Coords>) {
+        let [x,y] = action.payload
+        state.aimPixels = [x+10, y+10]
+        if(state.aimPixels[0] <= state.fieldPixelBorders[0]) {
+
+        }
+        if(Math.abs(state.headPixels[0]!-state.aimPixels[0]!) < 10 && Math.abs(state.headPixels[1]!-state.aimPixels[1]!) < 10) {
+            state.isGameOver = true;
+          }
+    },
+    setGamePixels(state, action: PayloadAction<Coords>) {
+        let [xTop, yLeft] = action.payload
+        let xBottom = xTop+21*state.height!
+        let yRight = yLeft + 21 * state.width!
+        state.fieldPixelBorders = [xTop-21, xBottom-21, yLeft+21, yRight-21]
+    }
   },
 });
 
@@ -256,6 +287,9 @@ export const {
   setRockCoords,
   setGameOver,
   resetRocks,
+  setHeadPixels,
+  setAimPixels,
+  setGamePixels
 } = snakeSlice.actions;
 
 export default snakeSlice.reducer;
